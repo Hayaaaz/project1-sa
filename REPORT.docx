@@ -1,0 +1,27 @@
+1. What I Built
+For this project, I created a complete runbook system to restart and verify a Python Simple HTTP Server running on port 8000. I built both a human-written runbook and an AI-generated runbook, along with a restart script, a policy file, a verdict comparing the two runbooks, and this final report.
+The service I chose was the built-in Python HTTP server because it is simple, easy to test, and works consistently across different operating systems. Since I am working on Windows, all of my testing and verification was done using Windows-compatible commands. I also used Git Bash and Command Prompt to run the server, test the port, and confirm the behavior of the restart script.
+My human-runbook documents the exact steps I took to diagnose and restart the service on my own machine. The AI runbook is a more formal, structured version of the same procedure. I also wrote a restart script (restart-service.sh) that stops any running Python server and starts a new one. Because Windows does not support Linux commands like pkill, I rewrote the script to use taskkill, which works correctly on my system. The policy file defines what Copilot is allowed to do when helping with this service, and the verdict explains the differences between the human and AI runbooks.
+Overall, the project includes:
+•	runbook-verified.txt (human runbook)
+•	runbook-ai.txt (AI runbook)
+•	restart-service.sh (restart script)
+•	copilot_policy.yaml (policy file)
+•	verdict.txt (comparison)
+•	REPORT.md (this report)
+2. Where the AI Helped
+AI was helpful in several parts of this project. First, it helped me rewrite and structure the AI runbook in a clean, organized format. The AI version is more formal and consistent than what I would naturally write. It also helped me understand how to phrase steps in a more standardized way, which is useful for documentation.
+AI also helped me rewrite the restart script so it would work on Windows. The original Linux-style script used pkill, which does not exist on Windows. The AI helped me replace it with Taskkill, which solved the problem. It also helped me format the policy file in proper YAML syntax and made sure the rules were clear and safe.
+Overall, AI was most helpful for formatting, rewriting, and clarifying some points from the textbook. 
+3. Where the AI Hallucinated (with Examples)
+Even though the AI was helpful, it hallucinated or made incorrect assumptions in a few places.
+Example 1: Linux Commands 
+The AI originally suggested Linux commands like ps aux, lsof, and pkill. These commands do not work on Windows, which is the environment I am using. This is a classic hallucination: the AI assumed a Linux environment even though I never said I was using one.
+Example 2: Background Execution 
+The AI suggested using & to run the server in the background. This works on Linux, but not on Windows. I had to correct this by using/B instead.
+Example 3: Over-generalization 
+The AI runbook sometimes described steps that sounded correct but didn’t match what I actually saw on my machine. For example, it described “verifying the listener” in a generic way rather than referencing the actual output from netstat.
+These hallucinations were not harmful, but they show why human verification is necessary. The AI can generate a clean structure, but it does not always know the exact environment or the system's actual behavior.
+4. My Verdict: Would I Trust This Copilot?
+I would trust Copilot as a helpful assistant, but not as something that can make decisions for me. It’s great at organizing information, rewriting things clearly, and helping me draft steps faster than I could on my own. But during this project, it also made confident mistakes, like giving me Linux commands even though I’m on Windows. That showed me that I still have to double check everything myself.
+So my final verdict is this: Copilot is useful and saves time, but it can’t replace my own judgment. I would use it to help me write and think through problems, but I wouldn’t run anything it suggests without verifying it first.
