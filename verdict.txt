@@ -1,0 +1,20 @@
+1. Tone and Style
+My human runbook feels more personal and practical. It reflects the exact steps I took on my own Windows machine, including the commands I actually ran and the issues I ran into.
+The AI runbook is much more formal and structured. It reads more like official documentation than something written from hands‑on experience.
+
+2. Clarity
+Because I wrote the human version while actively testing the service, it’s very straightforward and easy to follow.
+The AI version is also clear, but it’s more generic. It explains the steps well, but it doesn’t include the small details that come from actually doing the work.
+
+3. Specificity
+My human runbook uses Windows‑specific commands like tasklist, netstat, and taskkill, which match my real environment.
+The AI runbook is accurate, but it presents everything in a standardized way without mentioning the real outputs or context I saw during testing.
+
+4. Usefulness
+For someone using Windows, the human runbook is more helpful because it’s based on real troubleshooting.
+The AI version is useful too, but it feels more like a template that might need adjustments depending on the system.
+
+5. Final Verdict
+The human runbook is more grounded and realistic because it comes from actually running the procedure.
+The AI runbook is more polished and organized, but less personal.
+Together, they show how human instructions capture real‑world context, while AI instructions provide a clean, structured version of the same process.
