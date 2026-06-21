@@ -1,0 +1,35 @@
+Service: Python Simple HTTP Server
+Port: 8000
+Start Command:
+python3 -m http.server 8000
+1. Symptoms
+•	HTTP service on port 8000 is not responding.
+•	Browser returns connection errors.
+•	No active listener detected on port 8000.
+2. Diagnosis
+Execute the following diagnostic checks to determine service status.
+1. Identify active Python processes
+tasklist | findstr python
+2. Verify port 8000 usage
+netstat -ano | findstr :8000
+If no process is associated with port 8000, the service is not running.
+3. Restart Procedure
+1. Terminate any existing Python HTTP server instance
+taskkill /IM python.exe /F
+2. Start a new instance of the HTTP server
+python3 -m http.server 8000
+(Optional background execution)
+start /B python3 -m http.server 8000
+4. Health Check
+1. Browser validation
+Navigate to:
+http://localhost:8000
+2. Command line validation
+curl -I http://localhost:8000
+Expected output:
+HTTP/1.0 200 OK
+5. Verification Criteria
+•	HTTP server responds successfully on port 8000.
+•	No error messages appear during startup.
+•	python.exe is active and associated with port 8000.
+•	Service behavior matches expected operational state.
