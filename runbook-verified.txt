@@ -2,15 +2,18 @@ Service: Python Simple HTTP Server
 Port: 8000
 Start command:
 python3 -m http.server 8000
+
 1. Symptoms
 •	The page doesn’t load in the browser
 •	Browser shows “Connection refused”
 •	Nothing appears to be listening on port 8000
+
 2. Diagnosis (Windows)
 1. Check whether the server process is running: 
 tasklist | findstr python
 2. Check if something is using port 8000
 netstat -ano | findstr :8000
+
 3. Restart (Windows)
 1. Stop any server process that might be stuck: 
 taskkill /IM python.exe /F
@@ -18,6 +21,7 @@ taskkill /IM python.exe /F
 python3 -m http.server 8000
 (Optional background mode)
 start /B python3 -m http.server 8000
+
 4. Health Check
 1. Open in browser
 http://localhost:8000
@@ -25,6 +29,7 @@ http://localhost:8000
 curl -I http://localhost:8000
 Expected result:
 HTTP/1.0 200 OK
+
 5. Verification
 •	The page loads normally
 •	No errors appear in the terminal
