@@ -1,37 +1,91 @@
-Service: Python Simple HTTP Server
-Port: 8000
-Start command:
-python3 -m http.server 8000
+RUNBOOK (Verified Human Version)
+Service: nginx
+Host: lab-server1
+Author: Haya
 
-1. Symptoms
-•	The page doesn’t load in the browser
-•	Browser shows “Connection refused”
-•	Nothing appears to be listening on port 8000
+------------------------------------------------------------
+1. Purpose
+------------------------------------------------------------
+This runbook provides the steps to safely check, restart, and
+verify the nginx web server on lab-server1. All commands use
+sudo to follow least‑privilege principles.
 
-2. Diagnosis (Windows)
-1. Check whether the server process is running: 
-tasklist | findstr python
-2. Check if something is using port 8000
-netstat -ano | findstr :8000
+------------------------------------------------------------
+2. Preconditions
+------------------------------------------------------------
+- User has sudo privileges.
+- nginx is installed and enabled.
+- System is Ubuntu Server (26.04 LTS).
+- Internet access is not required for restart operations.
 
-3. Restart (Windows)
-1. Stop any server process that might be stuck: 
-taskkill /IM python.exe /F
-2. Start the server again: 
-python3 -m http.server 8000
-(Optional background mode)
-start /B python3 -m http.server 8000
+------------------------------------------------------------
+3. Check nginx Status
+------------------------------------------------------------
+sudo systemctl status nginx
 
-4. Health Check
-1. Open in browser
-http://localhost:8000
-2. Or check with curl
-curl -I http://localhost:8000
-Expected result:
-HTTP/1.0 200 OK
+Expected:
+- Active: active (running)
+- Enabled: yes
 
-5. Verification
-•	The page loads normally
-•	No errors appear in the terminal
-•	The python.exe process is running again
-•	Port 8000 is listening
+If inactive:
+sudo systemctl start nginx
+
+------------------------------------------------------------
+4. Restart nginx Safely
+------------------------------------------------------------
+sudo systemctl restart nginx
+
+Check exit code:
+echo $?
+
+0 = success  
+Non‑zero = failure (check logs)
+
+------------------------------------------------------------
+5. Verify nginx After Restart
+------------------------------------------------------------
+A. Check service health:
+sudo systemctl status nginx
+
+B. Check port 80:
+sudo ss -tulpn | grep nginx
+
+C. Test locally:
+curl -I http://localhost
+
+Expected:
+HTTP/1.1 200 OK
+
+------------------------------------------------------------
+6. Check Logs
+------------------------------------------------------------
+sudo journalctl -u nginx --since "5 minutes ago"
+
+Error logs:
+sudo tail -n 50 /var/log/nginx/error.log
+
+Access logs:
+sudo tail -n 50 /var/log/nginx/access.log
+
+------------------------------------------------------------
+7. Common Fixes
+------------------------------------------------------------
+A. Syntax errors:
+sudo nginx -t
+
+B. Reload without downtime:
+sudo systemctl reload nginx
+
+C. Permissions issues:
+sudo chown -R www-data:www-data /var/www/html
+
+------------------------------------------------------------
+8. Escalation
+------------------------------------------------------------
+If nginx fails repeatedly:
+- Capture logs
+- Document symptoms
+- Escalate to instructor with:
+  * status output
+  * error log excerpt
+  * steps attempted
