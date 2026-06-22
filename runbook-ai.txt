@@ -1,20 +1,16 @@
-RUNBOOK (AI‑Generated Version)
+RUNBOOK — AI Generated Version
 Service: nginx
 Host: lab-server1
 
-1. Check nginx status:
+1. Check nginx:
 sudo systemctl status nginx
 
 2. Restart nginx:
 sudo systemctl restart nginx
 
-3. Validate:
+3. Verify:
 curl -I http://localhost
 
-4. Check logs:
+4. Logs:
 sudo journalctl -u nginx
-sudo tail -n 50 /var/log/nginx/error.log
-
-5. Reload configuration:
-sudo nginx -t
-sudo systemctl reload nginx
+sudo tail -n 20 /var/log/nginx/error.log
