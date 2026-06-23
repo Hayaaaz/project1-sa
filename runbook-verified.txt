@@ -1,91 +1,91 @@
-RUNBOOK (Verified Human Version)
-Service: nginx
-Host: lab-server1
-Author: Haya
+# Verified Runbook: Restarting the nginx Web Server Safely
+# Structure: confirm → capture → change → verify
+# Service: nginx.service
+# Host: Ubuntu VM (lab environment)
+# Purpose: Safely restart nginx and verify real service health, not just “active” status.
+
+SERVICE="nginx.service"
+HEALTH_URL="http://127.0.0.1"
 
 ------------------------------------------------------------
-1. Purpose
+1. CONFIRM — Ensure the service exists before touching anything
 ------------------------------------------------------------
-This runbook provides the steps to safely check, restart, and
-verify the nginx web server on lab-server1. All commands use
-sudo to follow least‑privilege principles.
 
-------------------------------------------------------------
-2. Preconditions
-------------------------------------------------------------
-- User has sudo privileges.
-- nginx is installed and enabled.
-- System is Ubuntu Server (26.04 LTS).
-- Internet access is not required for restart operations.
+Check that the nginx unit file exists:
 
-------------------------------------------------------------
-3. Check nginx Status
-------------------------------------------------------------
-sudo systemctl status nginx
+    systemctl cat nginx.service
 
 Expected:
-- Active: active (running)
-- Enabled: yes
+    The unit file contents should display without errors.
 
-If inactive:
-sudo systemctl start nginx
-
-------------------------------------------------------------
-4. Restart nginx Safely
-------------------------------------------------------------
-sudo systemctl restart nginx
-
-Check exit code:
-echo $?
-
-0 = success  
-Non‑zero = failure (check logs)
+If this fails:
+    STOP — nginx may not be installed or the service name is incorrect.
 
 ------------------------------------------------------------
-5. Verify nginx After Restart
+2. CAPTURE — Gather current state for postmortem analysis
 ------------------------------------------------------------
-A. Check service health:
-sudo systemctl status nginx
 
-B. Check port 80:
-sudo ss -tulpn | grep nginx
+Check whether nginx is currently active:
 
-C. Test locally:
-curl -I http://localhost
+    systemctl is-active nginx.service || true
+
+Capture the last 20 log lines:
+
+    journalctl -u nginx.service -n 20 --no-pager || true
+
+Validate nginx configuration syntax:
+
+    sudo nginx -t
 
 Expected:
-HTTP/1.1 200 OK
+    “syntax is ok” and “test is successful”
+
+If syntax check fails:
+    STOP — fix the configuration before restarting.
 
 ------------------------------------------------------------
-6. Check Logs
+3. CHANGE — Restart nginx safely using systemd
 ------------------------------------------------------------
-sudo journalctl -u nginx --since "5 minutes ago"
 
-Error logs:
-sudo tail -n 50 /var/log/nginx/error.log
+Restart the service:
 
-Access logs:
-sudo tail -n 50 /var/log/nginx/access.log
+    sudo systemctl restart nginx.service
 
-------------------------------------------------------------
-7. Common Fixes
-------------------------------------------------------------
-A. Syntax errors:
-sudo nginx -t
-
-B. Reload without downtime:
-sudo systemctl reload nginx
-
-C. Permissions issues:
-sudo chown -R www-data:www-data /var/www/html
+Systemd will handle ordering and dependencies. No stop/start sequences.
 
 ------------------------------------------------------------
-8. Escalation
+4. VERIFY — Confirm nginx is actually healthy
 ------------------------------------------------------------
-If nginx fails repeatedly:
-- Capture logs
-- Document symptoms
-- Escalate to instructor with:
-  * status output
-  * error log excerpt
-  * steps attempted
+
+Wait briefly:
+
+    sleep 2
+
+Check service state:
+
+    systemctl is-active nginx.service
+
+Expected:
+    active
+
+Re-check configuration syntax:
+
+    sudo nginx -t
+
+Expected:
+    syntax is ok
+
+Verify HTTP response:
+
+    curl -fsS --max-time 5 http://127.0.0.1 >/dev/null
+
+If curl succeeds:
+    nginx is healthy and serving traffic.
+
+If curl fails:
+    Collect additional evidence:
+
+        systemctl status nginx.service --no-pager
+        journalctl -u nginx.service -n 50 --no-pager
+
+    Then escalate or investigate further.
