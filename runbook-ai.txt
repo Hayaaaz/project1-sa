@@ -1,16 +1,34 @@
-RUNBOOK — AI Generated Version
-Service: nginx
-Host: lab-server1
+# AI-Generated Runbook for Restarting nginx
 
-1. Check nginx:
-sudo systemctl status nginx
+This runbook will restart the nginx web server and ensure it is running correctly.  
+Follow these steps exactly.
 
-2. Restart nginx:
-sudo systemctl restart nginx
+1. Confirm nginx is installed:
+    nginx --version
 
-3. Verify:
-curl -I http://localhost
+2. Check if nginx is running:
+    systemctl status nginx
 
-4. Logs:
-sudo journalctl -u nginx
-sudo tail -n 20 /var/log/nginx/error.log
+3. Stop nginx to clear any stale workers:
+    sudo systemctl stop nginx
+    sleep 5
+
+4. Clear the nginx cache directory:
+    sudo rm -rf /var/cache/nginx/*
+
+5. Start nginx again:
+    sudo systemctl start nginx
+
+6. Reload firewall rules to ensure port 80 is open:
+    sudo ufw reload
+
+7. Validate nginx configuration:
+    sudo nginx -t
+
+8. Verify nginx is listening on port 80:
+    netstat -tulpn | grep nginx
+
+9. Test the website:
+    curl http://localhost
+
+If all steps succeed, nginx is fully operational.
