@@ -1,20 +1,57 @@
-1. Tone and Style
-My human runbook feels more personal and practical. It reflects the exact steps I took on my own Windows machine, including the commands I actually ran and the issues I ran into.
-The AI runbook is much more formal and structured. It reads more like official documentation than something written from hands‑on experience.
+VERDICT ON AI-GENERATED RUNBOOK
+Source: runbook-ai.txt
+Model: GitHub Copilot Chat — GPT‑4o
+Human Reviewer: Haya
 
-2. Clarity
-Because I wrote the human version while actively testing the service, it’s very straightforward and easy to follow.
-The AI version is also clear, but it’s more generic. It explains the steps well, but it doesn’t include the small details that come from actually doing the work.
+This file documents all hallucinations found in the AI-generated runbook, classifies each one, and records my human judgment (“human call”) on why it is incorrect or unsafe.
 
-3. Specificity
-My human runbook uses Windows‑specific commands like tasklist, netstat, and taskkill, which match my real environment.
-The AI runbook is accurate, but it presents everything in a standardized way without mentioning the real outputs or context I saw during testing.
+------------------------------------------------------------
+1. HALLUCINATION: “Stop nginx to clear any stale workers”
+   AI Step: sudo systemctl stop nginx
+   Classification: Incorrect assumption / unnecessary action
+   Human Call: Stopping nginx is not required for a safe restart and introduces downtime. 
+               The verified runbook uses `restart` instead of stop/start.
 
-4. Usefulness
-For someone using Windows, the human runbook is more helpful because it’s based on real troubleshooting.
-The AI version is useful too, but it feels more like a template that might need adjustments depending on the system.
+------------------------------------------------------------
+2. HALLUCINATION: “Clear the nginx cache directory”
+   AI Step: sudo rm -rf /var/cache/nginx/*
+   Classification: Dangerous command / destructive action
+   Human Call: This is unsafe. Deleting cache is not part of a restart procedure and 
+               `rm -rf` is destructive. This must never appear in a verified runbook.
 
-5. Final Verdict
-The human runbook is more grounded and realistic because it comes from actually running the procedure.
-The AI runbook is more polished and organized, but less personal.
-Together, they show how human instructions capture real‑world context, while AI instructions provide a clean, structured version of the same process.
+------------------------------------------------------------
+3. HALLUCINATION: “Reload firewall rules to ensure port 80 is open”
+   AI Step: sudo ufw reload
+   Classification: Fabricated requirement / incorrect assumption
+   Human Call: The runbook assumes the system uses UFW and that the firewall rules need to be reloaded. 
+               This is not part of the nginx restart and may not apply to the environment.
+
+------------------------------------------------------------
+4. HALLUCINATION: “Verify nginx is listening on port 80 using netstat”
+   AI Step: netstat -tulpn | grep nginx
+   Classification: Deprecated tool/environment assumption
+   Human Call: `netstat` is not installed by default on modern systems. 
+               The verified runbook uses `curl` instead, which is reliable and portable.
+
+------------------------------------------------------------
+5. HALLUCINATION: Missing confirm→capture→change→verify structure
+   AI Issue: The AI runbook does not follow the required structure.
+   Classification: Structural hallucination / missing required format
+   Human Call: The assignment requires this structure. The AI output fails to meet it.
+
+------------------------------------------------------------
+6. HALLUCINATION: Assumes nginx restart requires clearing cache, firewall reload, and port checks
+   AI Issue: Adds unnecessary, invented steps
+   Classification: Fabricated operational steps
+   Human Call: These steps are not part of a safe nginx restart and were removed in the verified runbook.
+
+------------------------------------------------------------
+7. HALLUCINATION: “If all steps succeed, nginx is fully operational”
+   AI Issue: No real health check beyond curl localhost
+   Classification: Oversimplification / incomplete verification
+   Human Call: The verified runbook includes real health checks (nginx -t, curl, service state). 
+               The AI version does not.
+
+------------------------------------------------------------
+SUMMARY
+The AI-generated runbook contained multiple hallucinations, including unsafe commands, incorrect assumptions, deprecated tools, and missing required structure. Human review was necessary to produce a safe, correct, and verifiable runbook.
