@@ -1,0 +1,27 @@
+Linter Run: ShellCheck
+======================
+
+Command executed:
+shellcheck verify.sh
+
+Output:
+(no output)
+
+Interpretation:
+ShellCheck produced no warnings or errors. This means the script contains no detectable syntax or style issues.
+
+
+Error ShellCheck Cannot Catch
+=============================
+
+ShellCheck cannot detect logic errors.
+
+For example, if the script accidentally used the wrong variable name:
+
+    if [ "$STARE" = "active" ]; then
+
+instead of:
+
+    if [ "$STATE" = "active" ]; then
+
+the script would still run, but it would behave incorrectly. ShellCheck cannot know the programmer's intention, so it cannot warn about this type of mistake.
