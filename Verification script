@@ -1,0 +1,35 @@
+#!/bin/bash
+SERVICE="nginx.service"
+HEALTH_URL="http://127.0.0.1"
+
+echo "=== CONFIRM: Service exists ==="
+if ! systemctl cat "$SERVICE" >/dev/null 2>&1; then
+    echo "ERROR: Service $SERVICE does not exist"
+    exit 2
+fi
+
+echo "=== CAPTURE: Check configuration syntax ==="
+if ! sudo nginx -t >/dev/null 2>&1; then
+    echo "ERROR: nginx configuration test FAILED"
+    sudo nginx -t   # show the actual error
+    exit 3
+fi
+
+echo "=== VERIFY: Check service state ==="
+STATE=$(systemctl is-active "$SERVICE")
+echo "Service state: $STATE"
+
+if [ "$STATE" != "active" ]; then
+    echo "ERROR: nginx is not active"
+    exit 4
+fi
+
+echo "=== VERIFY: Check HTTP response ==="
+if ! curl -fsS --max-time 5 "$HEALTH_URL" >/dev/null 2>&1; then
+    echo "ERROR: nginx is not serving HTTP traffic"
+    curl -I "$HEALTH_URL"
+    exit 5
+fi
+
+echo "SUCCESS: nginx is healthy"
+exit 0
