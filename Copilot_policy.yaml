@@ -1,5 +1,4 @@
 # copilot_policy.yaml — AI usage policy for the nginx verification script project.
-#
 # This artifact documents WHERE the copilot may assist, WHERE it may only suggest,
 # and WHO owns the final judgment. It encodes the core rule: the human stays in the
 # loop for all decisions, approvals, and interpretations. Adapted for the Week‑1
@@ -44,7 +43,7 @@ never_delegate:
 
 # Required documentation for any AI-assisted work in this project.
 required_in_every_change:
-  - ai_tool_and_model: "Microsoft Copilot (as of 2026)"
+  - ai_tool_and_model: "Microsoft Copilot (as of 2026)."
   - what_was_delegated: "the exact prompt or task given to the AI"
   - what_the_human_verified: "the lines reviewed and how correctness was confirmed"
   - accountable_human: Haya A Hussein
