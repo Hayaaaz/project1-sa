@@ -1,25 +1,50 @@
+# copilot_policy.yaml — AI usage policy for the nginx verification script project.
+#
+# This artifact documents WHERE the copilot may assist, WHERE it may only suggest,
+# and WHO owns the final judgment. It encodes the core rule: the human stays in the
+# loop for all decisions, approvals, and interpretations. Adapted for the Week‑1
+# nginx verification assignment.
+
 version: 1
-rules:
-  - id: restrict_destructive_actions
-    description: Copilot should not suggest commands that delete files, modify system settings, or terminate unrelated processes.
-    action: block
+owner: Haya A Hussein
+last_reviewed: "2026-06-23"
 
-  - id: stay_within_scope
-    description: Copilot should only provide help related to diagnosing, restarting, or verifying the Python Simple HTTP Server on port 8000.
-    action: allow
+# The autonomy ladder. Every AI‑touched task sits on exactly one rung.
+# observe/suggest are safe; act/auto require a named human accountable for outcomes.
+autonomy_levels:
+  - rung: 0
+    name: observe
+    description: "AI may read logs, errors, and command output and summarize. No writes, no recommendations."
+  - rung: 1
+    name: suggest
+    description: "AI may draft scripts, runbooks, commands, and documentation. Human reviews EVERY line before use."
+  - rung: 2
+    name: act_with_approval
+    description: "AI may propose actions (e.g., restart nginx), but execution requires explicit human approval."
+  - rung: 3
+    name: autonomous
+    description: "AI acts without per‑action approval. NOT ALLOWED for this project."
 
-  - id: avoid_personal_data
-    description: Copilot should not request, store, or rely on personal or sensitive user information.
-    action: block
+# What the copilot is allowed to do, by task, for this assignment.
+tasks:
+  draft_verification_script:   { max_rung: 1, requires_human_verify: true }
+  explain_nginx_errors:        { max_rung: 1, requires_human_verify: true }
+  summarize_test_results:      { max_rung: 1, requires_human_verify: true }
+  generate_runbook_sections:   { max_rung: 1, requires_human_verify: true }
+  propose_fix_for_nginx:       { max_rung: 1, requires_human_verify: true }
+  execute_commands:            { max_rung: 0 }   # AI may NOT run commands; human executes everything
+  modify_system_config:        { max_rung: 1 }   # AI may suggest edits; human applies them manually
 
-  - id: explain_commands
-    description: Copilot should explain any command it suggests so the user understands what it does before running it.
-    action: allow
+# Hard guardrails — never delegated.
+never_delegate:
+  - "Running commands on the VM (systemctl, nginx -t, editing configs)."
+  - "Any destructive or irreversible action (rm -rf, deleting configs, overwriting files)."
+  - "Approving its own suggestions or changes."
+  - "Any step whose failure mode the human cannot personally explain."
 
-  - id: no_network_reconfiguration
-    description: Copilot should not suggest changes to firewall rules, network adapters, or system‑wide ports.
-    action: block
-
-  - id: windows_environment
-    description: Copilot should provide Windows‑compatible commands when suggesting diagnostics or restart steps.
-    action: allow
+# Required documentation for any AI-assisted work in this project.
+required_in_every_change:
+  - ai_tool_and_model: "Microsoft Copilot (as of 2026)"
+  - what_was_delegated: "the exact prompt or task given to the AI"
+  - what_the_human_verified: "the lines reviewed and how correctness was confirmed"
+  - accountable_human: Haya A Hussein
