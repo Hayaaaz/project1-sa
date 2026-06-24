@@ -42,4 +42,4 @@ Copilot is excellent at accelerating work, but it is not a substitute for unders
 In a real production environment, I would be even more cautious. I would never allow Copilot to restart services, modify configurations, or act autonomously. It is a drafting and reasoning tool — not an operator.
 
 Honest AI Usage Note
-I used Microsoft Copilot throughout this project to help draft the verification script, write documentation, explain concepts, and generate the copilot_policy.yaml file. All AI‑generated content was reviewed, edited, and approved by me. The final decisions, testing, and verification were performed manually. No commands were executed by the AI, and all work was completed with a human in the loop.
+I used Microsoft Copilot throughout this project to help draft the verification script, explain concepts, and format the copilot_policy.yaml file. All AI‑generated content was reviewed, edited, and approved by me. The final decisions, testing, and verification were performed manually. No commands were executed by the AI, and all work was completed with a human in the loop.
